@@ -858,3 +858,11 @@ img {
 #alert-message {
   color: white;
 }
+
+.header__menuItem.active a {
+  background-color: var(--color-sub-light);
+  transition: all 0.5s ease-in-out;
+  padding: 1rem 3rem;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+}
