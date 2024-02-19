@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-9&4dg^yezyvsk)1@a%_#neja9e_3mpv!ibuz25^cw0im8aa1^b"
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  #this will go to False when we throw our project into production and then we add allowed hosts below who can access our website
@@ -53,7 +53,7 @@ REST_FRAMEWORK = {
     
 }
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
@@ -138,10 +138,10 @@ WSGI_APPLICATION = "devsearch.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "devsearch",
-        "USER": 'maumoonmohammad',
-        "PASSWORD": 'Secure_356',
-        "HOST": 'database-1.c3uge6cmuvzz.us-east-2.rds.amazonaws.com',
+        "NAME": os.environ.get('DB_NAME'),
+        "USER": os.environ.get('DB_USER'),
+        "PASSWORD": os.environ.get('DB_PASS'),
+        "HOST": os.environ.get('DB_HOST'),
         "PORT": 9000
     }
 }
@@ -185,40 +185,33 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER ='developers.donotreply@gmail.com'
-EMAIL_HOST_PASSWORD ='xwrk kkvg zdtn jevx'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-# STATIC_URL = "static/"
-# MEDIA_URL = "/images/"  # For django to render images on the client side, tells django to look for images in static folder
-
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR,'static') ## we have added a static folder to the base directory
-#     # we can do below directly in newer django
-#     # BASE_DIR / 'static' 
-
-# ]
-# MEDIA_ROOT = os.path.join(BASE_DIR, "static/images") # saves the uploaded images in the images folder inside of static folder otherwise all the uploaded images will go into root directory
-# STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles') # this folder saves all the static files(saved while developing the project) in static folder once we run the command python manage.py collectstatic in the terminal
-#Actually what happens is that the static files will not be rendered in the production because django is not built that way thats why we have to write the above lined code 
-
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
-
-
-
-STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/images")
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_S3_FILE_OVERWRITE = False
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
+AWS_STORAGE_BUCKET_NAME = 'django-developers-bucket'
+
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+STATIC_URL = AWS_S3_CUSTOM_DOMAIN+'/static/'
+
+
+
+
+
 
 if os.getcwd() == '/app':
     DEBUG = False
